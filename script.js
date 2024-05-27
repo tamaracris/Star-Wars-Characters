@@ -6,8 +6,14 @@ window.onload = async () => {
 } catch (error) {
     console.log(error);
     alert('Erro ao carregar cards');
-};
 }
+
+    const nextButton = document.getElementById('next-button')
+    const backButton = document.getElementById('back-button')
+
+    nextButton.addEventListener('click', loadNextPage)
+    backButton.addEventListener('click', loadPrevioustPage)
+};
 
 async function loadCharacters(url) {
     const mainContent = document.getElementById('main-content')
@@ -20,7 +26,7 @@ async function loadCharacters(url) {
 
         responseJson.results.forEach((character) => {
             const card = document.createElement("div")
-            card.style.backgroundImage = `url('./assets/luke-skywalker.webp')`
+            card.style.backgroundImage = `url('https://starwars-visualguide.com/assets/img/characters/${character.url.replace(/\D/g, "")}.jpg')`
             card.className = "cards"
 
             const characterNameBG = document.createElement("div")
@@ -35,6 +41,14 @@ async function loadCharacters(url) {
 
             mainContent.appendChild(card)
         });
+
+        const nextButton = document.getElementById('next-button')
+        const backButton = document.getElementById('back-button')
+
+        nextButton.disable = !responseJson.next
+        backButton.disable = !responseJson.previous
+
+        backButton.style.visibility = responseJson.previous? "visible" : "hidden"
 
         currentPageurl = url 
 
