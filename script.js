@@ -12,7 +12,7 @@ window.onload = async () => {
     const backButton = document.getElementById('back-button')
 
     nextButton.addEventListener('click', loadNextPage)
-    backButton.addEventListener('click', loadPrevioustPage)
+    backButton.addEventListener('click', loadPreviousPage)
 };
 
 async function loadCharacters(url) {
@@ -39,21 +39,61 @@ async function loadCharacters(url) {
             characterNameBG.appendChild(characterName)
             card.appendChild(characterNameBG)
 
+            card.onclick = () => {
+                const modal = document.getElementById("modal")
+                modal.style.visibility ="visible"
+            }
+
             mainContent.appendChild(card)
         });
 
         const nextButton = document.getElementById('next-button')
         const backButton = document.getElementById('back-button')
 
-        nextButton.disable = !responseJson.next
-        backButton.disable = !responseJson.previous
+        nextButton.disabled = !responseJson.next
+        backButton.disabled = !responseJson.previous
 
         backButton.style.visibility = responseJson.previous? "visible" : "hidden"
 
-        currentPageurl = url 
+        currentPageUrl = url
 
     } catch (error) {
         alert('Erro ao carregar os personagens')
         console.log(error)
     }
 }
+
+async function loadNextPage() {
+    if (!currentPageUrl) return;
+
+    try {
+        const response = await fetch(currentPageUrl)
+        const responseJson = await response.json()
+
+        await loadCharacters(responseJson.next)
+    } catch (error) {
+        console.log(error)
+        alert('Erro ao carregar a próxima página')
+    }
+}
+
+async function loadPreviousPage() {
+    if (!currentPageUrl) return;
+
+    try {
+        const response = await fetch(currentPageUrl)
+        const responseJson = await response.json()
+
+        await loadCharacters(responseJson.previous)
+    } catch (error) {
+        console.log(error)
+        alert('Erro ao carregar a página anterior')
+    }
+}
+
+function hideModal() {
+    const modal = document.getElementById("modal")
+    modal.style.visibility = "hidden"
+}
+
+
